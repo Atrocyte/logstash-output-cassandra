@@ -119,8 +119,6 @@ module LogStash; module Outputs; module Cassandra
           return ::Cassandra::Types::Inet.new(event_data)
         when 'float'
           return ::Cassandra::Types::Float.new(event_data)
-        when 'varchar'
-          return ::Cassandra::Types::Varchar.new(event_data)
         when 'text'
           return ::Cassandra::Types::Text.new(event_data)
         when 'blob'
