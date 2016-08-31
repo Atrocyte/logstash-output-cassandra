@@ -86,7 +86,6 @@ describe 'client create actions', :docker => true do
       { type: 'timestamp', value: 1457606758, assert_override: Helper::get_assert_timestamp_equallity() },
       { type: 'inet', value: '192.168.99.100' },
       { type: 'float', value: '10.050000190734863' },
-      { type: 'varchar', value: 'some chars' },
       { type: 'text', value: 'some text' },
       { type: 'blob', value: 'a blob' },
       { type: 'ascii', value: 'some ascii' },
