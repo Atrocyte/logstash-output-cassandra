@@ -109,6 +109,15 @@ RSpec.describe LogStash::Outputs::Cassandra::SafeSubmitter do
       return future_double
     end
 
+    it 'does nothing in case it got a nil action' do
+      doubles = setup_session_double(default_options)
+      expect(doubles[:session_double]).to_not(receive(:prepare))
+      expect(doubles[:session_double]).to_not(receive(:execute_async))
+      sut_instance = sut.new(default_options)
+
+      expect { sut_instance.submit([nil]) }.to_not raise_error
+    end
+
     it 'prepares and executes the query' do
       doubles = setup_session_double(default_options)
       expect(doubles[:session_double]).to(receive(:prepare).with(expected_query_for_one_action)).and_return('eureka')

@@ -17,18 +17,22 @@ module LogStash; module Outputs; module Cassandra
 
     def parse(event)
       action = {}
-      action['table'] = event.sprintf(@table)
-      filter_transform = get_filter_transform(event)
-      if filter_transform
-        action['data'] = {}
-        filter_transform.each { |filter|
-          add_event_value_from_filter_to_action(event, filter, action)
-        }
-      else
-        add_event_data_using_configured_hints(event, action)
+      begin
+        action['table'] = event.sprintf(@table)
+        filter_transform = get_filter_transform(event)
+        if filter_transform
+          action['data'] = {}
+          filter_transform.each { |filter|
+            add_event_value_from_filter_to_action(event, filter, action)
+          }
+        else
+          add_event_data_using_configured_hints(event, action)
+        end
+        @logger.debug('event parsed to action', :action => action)
+      rescue Exception => e
+        @logger.error('failed parsing event', :event => event, :error => e)
+        action = nil
       end
-
-      @logger.debug('event parsed to action', :action => action)
       action
     end
 

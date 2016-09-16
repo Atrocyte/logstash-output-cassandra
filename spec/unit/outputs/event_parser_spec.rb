@@ -169,9 +169,10 @@ RSpec.describe LogStash::Outputs::Cassandra::EventParser do
           options = default_opts.update({ 'filter_transform' => [{ 'event_key' => 'a_field', 'column_name' => 'a_column', 'cassandra_type' => 'what?!' }] })
           sut_instance = sut.new(options)
           sample_event['a_field'] = 'a_value'
-          expect(options['logger']).to(receive(:error))
+          expect(options['logger']).to(receive(:error)).at_least(:once)
 
-          expect { sut_instance.parse(sample_event) }.to raise_error(/Cannot convert/)
+          result = sut_instance.parse(sample_event)
+          expect(result).to be_nil
         end
       end
     end
@@ -237,21 +238,23 @@ RSpec.describe LogStash::Outputs::Cassandra::EventParser do
     it 'fails for unknown hint types' do
       options = default_opts.update({ 'hints' => { 'a_field' => 'not_a_real_type' } })
       sut_instance = sut.new(options)
-      expect(options['logger']).to(receive(:error))
-
+      expect(options['logger']).to(receive(:error)).at_least(:once)
       sample_event['a_field'] = 'a value'
 
-      expect { sut_instance.parse(sample_event) }.to raise_error(/Cannot convert/)
+      result = sut_instance.parse(sample_event)
+
+      expect(result).to be_nil
     end
 
     it 'fails for unsuccessful hint conversion' do
       options = default_opts.update({ 'hints' => { 'a_field' => 'int' } })
-      expect(options['logger']).to(receive(:error))
-
+      expect(options['logger']).to(receive(:error)).at_least(:once)
       sut_instance = sut.new(options)
-
       sample_event['a_field'] = 'i am not an int!!!'
-      expect { sut_instance.parse(sample_event) }.to raise_error(/Cannot convert/)
+
+      result = sut_instance.parse(sample_event)
+
+      expect(result).to be_nil
     end
   end
 
@@ -296,8 +299,11 @@ RSpec.describe LogStash::Outputs::Cassandra::EventParser do
       options = default_opts.update({ 'ignore_bad_values' => true, 'hints' => { 'a_field' => 'map<float>' } })
       sut_instance = sut.new(options)
       sample_event['a_field'] = 'i am not a set'
+      expect(options['logger']).to(receive(:error))
 
-      expect { sut_instance.parse(sample_event) }.to raise_error ArgumentError
+      result = sut_instance.parse(sample_event)
+
+      expect(result).to be_nil
     end
   end
 end

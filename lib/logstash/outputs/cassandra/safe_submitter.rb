@@ -57,8 +57,10 @@ module LogStash; module Outputs; module Cassandra
       remaining_queries = Queue.new
       actions.each do |action|
         begin
-          query = get_query(action)
-          remaining_queries << { :query => query, :arguments => action['data'].values }
+          if action
+            query = get_query(action)
+            remaining_queries << { :query => query, :arguments => action['data'].values }
+          end
         rescue Exception => e
           @logger.error('Failed to prepare query', :action => action, :exception => e, :backtrace => e.backtrace)
         end
