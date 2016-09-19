@@ -5,7 +5,7 @@ require 'cassandra'
 
 CONTAINER_NAME = "logstash-output-cassandra-#{rand(999).to_s}"
 CONTAINER_IMAGE = 'cassandra'
-CONTAINER_TAG = '3.5'
+CONTAINER_TAG = '3'
 
 module CassandraHelper
   def get_host_ip
