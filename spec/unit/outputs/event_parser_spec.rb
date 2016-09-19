@@ -108,7 +108,6 @@ RSpec.describe LogStash::Outputs::Cassandra::EventParser do
           { :name => 'timestamp', :type => ::Cassandra::Types::Timestamp, :value => 1457606758, expected: Time.at(1457606758) },
           { :name => 'inet',      :type => ::Cassandra::Types::Inet,      :value => '0.0.0.0' },
           { :name => 'float',     :type => ::Cassandra::Types::Float,     :value => '10.15' },
-          { :name => 'varchar',   :type => ::Cassandra::Types::Varchar,   :value => 'a varchar' },
           { :name => 'text',      :type => ::Cassandra::Types::Text,      :value => 'some text' },
           { :name => 'blob',      :type => ::Cassandra::Types::Blob,      :value => '12345678' },
           { :name => 'ascii',     :type => ::Cassandra::Types::Ascii,     :value => 'some ascii' },
@@ -261,7 +260,7 @@ RSpec.describe LogStash::Outputs::Cassandra::EventParser do
 
   describe 'ignore_bad_values is turned on' do
     [
-        { :name => 'timestamp', :value => 'i dont have to_time',      :expected => Time::parse('1970-01-01 00:00:00 +0000') },
+        { :name => 'timestamp', :value => 'i dont have to_time',      :expected => Time::parse('1970-01-01 00:00:00 +0000').localtime },
         { :name => 'inet',      :value => 'i am not an inet address', :expected => '0.0.0.0' },
         { :name => 'float',     :value => 'i am not a float',         :expected => 0.0 },
         { :name => 'bigint',    :value => 'i am not a bigint',        :expected => 0 },
