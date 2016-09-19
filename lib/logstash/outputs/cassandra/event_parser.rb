@@ -70,9 +70,8 @@ module LogStash; module Outputs; module Cassandra
     end
 
     def add_event_data_using_configured_hints(event, action)
-      action_data = event.to_hash
-      # Filter out @timestamp, @version, etc to be able to use elasticsearch input plugin directly
-      action_data.reject!{|key| %r{^@} =~ key}
+      action_data = event.to_hash.reject { |key| %r{^@} =~ key }
+      
       @hints.each do |event_key, cassandra_type|
         if action_data.has_key?(event_key)
           action_data[event_key] = convert_value_to_cassandra_type_or_default_if_configured(action_data[event_key], cassandra_type)
