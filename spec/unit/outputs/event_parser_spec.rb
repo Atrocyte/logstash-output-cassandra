@@ -260,7 +260,7 @@ RSpec.describe LogStash::Outputs::Cassandra::EventParser do
 
   describe 'ignore_bad_values is turned on' do
     [
-        { :name => 'timestamp', :value => 'i dont have to_time',      :expected => Time::parse('1970-01-01 00:00:00 +0000') },
+        { :name => 'timestamp', :value => 'i dont have to_time',      :expected => Time::parse('1970-01-01 00:00:00 +0000').localtime },
         { :name => 'inet',      :value => 'i am not an inet address', :expected => '0.0.0.0' },
         { :name => 'float',     :value => 'i am not a float',         :expected => 0.0 },
         { :name => 'bigint',    :value => 'i am not a bigint',        :expected => 0 },
