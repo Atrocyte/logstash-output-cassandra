@@ -40,7 +40,7 @@ module LogStash; module Outputs; module Cassandra
     def get_filter_transform(event)
       filter_transform = nil
       if @filter_transform_event_key
-        filter_transform = event[@filter_transform_event_key]
+        filter_transform = event.get(@filter_transform_event_key)
         assert_filter_transform_structure(filter_transform)
       elsif @filter_transform.length > 0
         filter_transform = @filter_transform
@@ -59,7 +59,7 @@ module LogStash; module Outputs; module Cassandra
     def add_event_value_from_filter_to_action(event, filter, action)
       event_data = event.sprintf(filter['event_key'])
       unless filter.fetch('expansion_only', false)
-        event_data = event[event_data]
+        event_data = event.get(event_data)
       end
       if filter.has_key?('cassandra_type')
         cassandra_type = event.sprintf(filter['cassandra_type'])
